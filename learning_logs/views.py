@@ -19,3 +19,11 @@ def topics(request):
 	#define where to send the data; pass context variable to render(), along w/request object, 
 	# and the path to template
 	return render(request, 'learning_logs/topics.html', context)
+
+# the topic() function needs to get the topic, all associated entries from the db:
+def topic(request, topic_id):
+	"""Show a single topic and all its entries"""
+	topic = Topic.objects.get(id=topic_id)	#query db
+	entries = topic.entry_set.order_by('-date_added')	#query db
+	context = {'topic': topic, 'entries': entries}	#key-value dictionary
+	return render(request, 'learning_logs/topic.html', context)
