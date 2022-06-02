@@ -1,13 +1,30 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 #import the model associated w/the data we need
 from .models import Topic 
+from .forms import TopicForm
 
 # Create your views here.
 def index(request):
 	"""The home page for Learning Log."""
 	return render(request, 'learning_logs/index.html')
 
+
+def new_topic(request):
+	"""Add new topic"""
+	if request.method != 'POST':
+		# No data submnitted; create a blank form.
+		form = TopicForm()
+	else:
+		#$ POST data submitted; process data.
+		form = TopicForm(data=request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('learning_logs:topics')
+
+	# Display a blank or invalid form.
+	context = {'form': form}
+	return render(request, 'learning_logs/new_topic.html', context)
 
 def topics(request):
 	"""Show all topics."""
@@ -27,3 +44,4 @@ def topic(request, topic_id):
 	entries = topic.entry_set.order_by('-date_added')	#query db
 	context = {'topic': topic, 'entries': entries}	#key-value dictionary
 	return render(request, 'learning_logs/topic.html', context)
+
