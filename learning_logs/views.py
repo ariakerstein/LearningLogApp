@@ -2,13 +2,12 @@ from django.shortcuts import render, redirect
 
 #import the model associated w/the data we need
 from .models import Topic 
-from .forms import TopicForm
+from .forms import TopicForm, EntryForm
 
 # Create your views here.
 def index(request):
 	"""The home page for Learning Log."""
 	return render(request, 'learning_logs/index.html')
-
 
 def new_topic(request):
 	"""Add new topic"""
@@ -44,4 +43,26 @@ def topic(request, topic_id):
 	entries = topic.entry_set.order_by('-date_added')	#query db
 	context = {'topic': topic, 'entries': entries}	#key-value dictionary
 	return render(request, 'learning_logs/topic.html', context)
+
+def new_entry(request, topic_id):
+	"""Add a new entry for a particular topic."""
+	topic = Topic.objects.get(id=topic_id)
+
+	if request.method != 'POST':
+		# POST data submitted; process data. 
+		form = EntryForm()
+	else:
+		# Post data submitted; process data.
+		form = EntryForm(data=request.POST)
+		if form.is_valid():
+			new_entry = form.save(commit=False)
+			new_entry.topic = topic
+			new_entry.save()
+			return redirect('learning_logs:topic', topic_id=topic_id)
+		
+	# Display a blank or invalid form. 
+	context = {'topic': topic, 'form': form}
+	return render(request, 'learning_logs/new_entry.html', context)
+
+
 
