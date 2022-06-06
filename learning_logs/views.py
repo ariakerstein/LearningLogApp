@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 #import the model associated w/the data we need
 from .models import Topic, Entry 
@@ -25,6 +26,7 @@ def new_topic(request):
 	context = {'form': form}
 	return render(request, 'learning_logs/new_topic.html', context)
 
+@login_required #awesome decorator that adds privacy to topics
 def topics(request):
 	"""Show all topics."""
 	#query the db asking for topic objects
