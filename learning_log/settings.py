@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-wt@%ybyl6r@!7-9e#8ju-l#yt+co$=q^)=zl1efz2x9=w2m&g7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -131,6 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # My Settings
 LOGIN_URL = 'users:login'
 
-# Heroku settings.
-import django_heroku
-django_heroku.settings(locals())
+# Configure Django App for Heroku.
+# import os
+import django_on_heroku
+django_on_heroku.settings(locals())
